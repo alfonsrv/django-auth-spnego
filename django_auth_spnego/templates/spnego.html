@@ -1,0 +1,13 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+    {% if spnego_success %}
+      Successful authentication!
+    {% else %}
+        You are seeing this page due to an issue completing GSSAPI-SPNEGO authentication. The most common reasons for this to occur are:
+            <ul>
+                <li>You do not have a valid Kerberos TGT. Re-run <b>klist get krbtgt</b> or <b>kinit</b></li>
+                <li>Your browser is not configured to offer Authorization details to this website. Contact your Group Policy administrator</li>
+                <li>There is a server-side configuration error. Contact the administrators of this site</li>
+            </ul>
+    {% endif %}
+{% endblock %}

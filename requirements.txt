@@ -1,2 +1,2 @@
-gssapi==1.7.2
+gssapi==1.9.0
 Django>=1.11

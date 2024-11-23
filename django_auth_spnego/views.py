@@ -15,11 +15,11 @@ class SpnegoHttpTemplate(TemplateResponse):
     status_code = 401
 
     def __init__(self, *args, **kwargs):
-        super(SpnegoHttpTemplate, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self["WWW-Authenticate"] = "Negotiate"
 
 
-class SpnegoAuthMixin(object):
+class SpnegoAuthMixin:
     def get(self, request, *args, **kwargs):
         self._spnego_success = False
         self._gssresponse = ""
@@ -34,27 +34,21 @@ class SpnegoAuthMixin(object):
                     login(request, user)
         else:
             self._spnego_success = True
-        return super(SpnegoAuthMixin, self).get(request, *args, **kwargs)
-
-
-class SpnegoViewMixin(object):
-    def get(self, request, *args, **kwargs):
         return self.render_to_response(self.get_context_data(**kwargs))
 
     def get_context_data(self, **kwargs):
-        ctx = super(SpnegoViewMixin, self).get_context_data(**kwargs)
-        ctx.update({"spnego_success": self._spnego_success})
+        context = super().get_context_data(**kwargs)
+        context.update({"spnego_success": self._spnego_success})
+        return context
 
 
-class SpnegoView(
-    SpnegoAuthMixin, SpnegoViewMixin, ContextMixin, TemplateResponseMixin, View
-):
+class SpnegoView(SpnegoAuthMixin, ContextMixin, TemplateResponseMixin, View):
     http_method_names = ["get", "post", "put", "head", "options"]
     response_class = SpnegoHttpTemplate
     template_name = "spnego.html"
 
     def render_to_response(self, context, **response_kwargs):
-        resp = super(SpnegoView, self).render_to_response(context, **response_kwargs)
+        resp = super().render_to_response(context, **response_kwargs)
         if self._spnego_success:
             if self._gssresponse:
                 resp["WWW-Authenticate"] = "Negotiate {}".format(self._gssresponse)
@@ -64,13 +58,13 @@ class SpnegoView(
         return resp
 
 
-class SpnegoLoginView(SpnegoAuthMixin, SpnegoViewMixin, LoginView):
+class SpnegoLoginView(SpnegoAuthMixin, LoginView):
     http_method_names = ["get", "post", "put", "head", "options"]
     response_class = SpnegoHttpTemplate
     template_name = "spnego.html"
 
     def get(self, request, *args, **kwargs):
-        resp = super(SpnegoLoginView, self).get(request, *args, **kwargs)
+        resp = super().get(request, *args, **kwargs)
         if self._spnego_success:
             resp = HttpResponseRedirect(self.get_success_url())
             if self._gssresponse:
