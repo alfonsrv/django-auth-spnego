@@ -18,7 +18,7 @@ install_reqs = [
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'django_auth_spnego'))
 
 setup(
-    name='django-auth-spnego',
+    name='django-auth-spnego2',
     version='5.01',
     url='https://github.com/alfonsrv/django-auth-spnego',
     description='Django Authentication Backend for Single Sign-On via Kerberos SPNEGO',
