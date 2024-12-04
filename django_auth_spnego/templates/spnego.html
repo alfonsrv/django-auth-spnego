@@ -1,7 +1,9 @@
 {% extends 'admin/base.html' %}
+{% block title %}{{ title|default_if_none:"Kerberos Auth | RAUSYS" }}{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
 {% block content %}
     {% if spnego_success %}
-      Successful authentication!
+      Successful authentication, <b>{{ request.user }}</b>!
     {% else %}
         You are seeing this page due to an issue completing GSSAPI-SPNEGO authentication. The most common reasons for this to occur are:
             <ul>

@@ -20,7 +20,9 @@ as mixins and part of already-existing logic.
 
 Install the package with pip:
 
-`pip install django-auth-spnego2`
+```bash
+pip install django-auth-spnego2
+```
 
 To use the auth backend in a Django project, add `'django_auth_spnego.backends.SpnegoModelBackend'` to 
 `AUTHENTICATION_BACKENDS`:
@@ -53,18 +55,20 @@ urls.append(r"^auth/spnego$", SpnegoView.as_view(), name="spnego")
 ## Configuration 🛠️
 
 ```python
-# Optional setting to define which SPN to use in your keytab file. If this is empty, all keytab entries will be used.
+# Optional setting to define which SPN to use in your keytab file. 
+# If this is empty, all keytab entries will be used.
 #   For example: `HTTP/sso.contoso.loc`
 AUTH_KERBEROS_SPN: str = ''
 
-# Split the Kerberos ticket UPN (User Principal Name) at the rightmost `@` sign. This can be useful if you want to match
-#   the left part to Django's default username or don't have your UPN's set up to match the e-mail address.
+# Split the Kerberos ticket UPN (User Principal Name) at the rightmost `@` sign. 
+# This can be useful if you want to match the left part to Django's default 
+# username or don't have your UPN's set up to match the e-mail address.
 #       `Administrator@CONTOSO.LOC ==> Administrator`
 #   This is only relevant when using the default authentication backend.
 AUTH_KERBEROS_UPN_SPLIT: bool = True
 
-# Which Django user field should be used for lookup (e.g. `username`, `email`). If this is empty, the `USERNAME_FIELD`
-#   configured in the user model will be used instead.
+# Which Django user field should be used for lookup (e.g. `username`, `email`). 
+# If empty, the `USERNAME_FIELD` configured in the user model will be used instead.
 #   This is only relevant when using the default authentication backend.
 AUTH_KERBEROS_USERNAME_LOOKUP: str = ''
 
@@ -99,6 +103,19 @@ from requests_kerberos import HTTPKerberosAuth
 
 r = requests.get('http://sso.contoso.loc/auth/spnego', auth=HTTPKerberosAuth())
 r.status_code
+```
+
+
+To streamline authentication for function-based views, a decorator is available to automatically authenticate users when 
+necessary. This is particularly useful for scripts accessing protected resources, as it eliminates the need to manually 
+call an authentication endpoint in advance.
+
+```python
+from django_auth_spnego.decorators import login_required_spnego
+
+@login_required_spnego
+def view(request):
+    ...
 ```
 
 See [here](https://www.roguelynn.com/words/apache-kerberos-for-django/) for further excellent information!

@@ -19,13 +19,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'django_auth_spnego')
 
 setup(
     name='django-auth-spnego2',
-    version='5.01',
+    version='5.03',
     url='https://github.com/alfonsrv/django-auth-spnego',
     description='Django Authentication Backend for Single Sign-On via Kerberos SPNEGO',
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
     packages=['django_auth_spnego'],
-    package_data={'django_auth_spnego': ['./*']},
+    package_data={'django_auth_spnego': ['./*', 'templates/*']},
     author='Brandon Ewing, alfonsrv',
     author_email='alfonsrv@protonmail.com',
     include_package_data=True,
